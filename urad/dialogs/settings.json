@@ -1,1 +1,1 @@
-{"urad_port": "COM7", "ultrasonik_port": "", "dir_path": "None", "phase_max": 3.0, "phase_min": -3.0, "mag_max": 10.0, "mag_min": 0.0}
+{"urad_port": "COM7", "ultrasonik_port": "COM8", "dir_path": "None", "phase_max": 3.0, "phase_min": -3.0, "mag_max": 30.0, "mag_min": -1.0}

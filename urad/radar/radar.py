@@ -100,7 +100,8 @@ class URadRadar(QObject):
         # Setup radar perhiperal
         send_raw_sec = lambda x: self.time.emit(x)
 
-        #  self.ultrasonic = UltrasonicSensor(ultrasonic_port)
+        if ultrasonic_port:
+            self.ultrasonic = UltrasonicSensor(ultrasonic_port)
 
         self.timer = Timer(timer_sec)
         self.timer.time_lapsed_sec.connect(send_raw_sec)
@@ -111,6 +112,7 @@ class URadRadar(QObject):
 
         try:
             self.ser.close()
+            self.ultrasonic.stop()
         except Exception:
             pass
 
@@ -175,18 +177,22 @@ class URadRadar(QObject):
 
                 self.magnitude_data.emit(FrequencyDomainComplex)
                 self.peek_phase.emit(float(phase[index_fft]))
-                #  self.ultrasonic_data.emit(self.ultrasonic.read())
+
+                try:
+                    self.ultrasonic_data.emit(self.ultrasonic.read())
+                except Exception:
+                    pass
 
                 phase_plot_data = np.append(phase_plot_data[1:], 0.0)
 
+            time.sleep(0.5)
+
             #  # If number of detected targets is greater than 0 prints an empty line for a smarter output
-            #  if NtarDetected > 0:
-            #      continue
+            if NtarDetected > 0:
+                continue
 
             # Sleep during specified time
             if not self.usb_communication:
                 time.sleep(self.timeSleep)
-
-            time.sleep(0.4)
 
         return self.close_radar()

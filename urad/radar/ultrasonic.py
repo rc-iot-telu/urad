@@ -32,5 +32,6 @@ class UltrasonicSensor:
     def stop(self) -> None:
         try:
             self.is_running = False
+            self.device.close()
         except AttributeError:
             pass

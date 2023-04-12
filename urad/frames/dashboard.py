@@ -1,4 +1,7 @@
+import os
 import typing
+import datetime
+import csv
 
 import numpy as np
 
@@ -29,6 +32,7 @@ class DashboardFrame(QWidget):
         layout.setColumnStretch(1, 35)
 
         self.setLayout(layout)
+        self._set_buffer()
         self.setStyleSheet(
             """
             QPushButton {
@@ -44,6 +48,28 @@ class DashboardFrame(QWidget):
             }
             """
         )
+
+    def _set_buffer(self):
+        self.buffer_data = {
+            "i": [],
+            "q": [],
+            "phase": [],
+            "magnitude": [],
+            "ultrasonik": [],
+        }
+
+    def _save_data(self):
+        today = str(datetime.datetime.today()).replace(":", ".")
+
+        for label, datas in self.buffer_data.items():
+            path = os.path.expanduser(f"~/Documents/DATA_{label.upper()}_{today}.csv")
+            with open(path, "w+", newline="") as f:
+                writer = csv.writer(f, dialect="excel")
+                for data in datas:
+                    try:
+                        writer.writerow(data.tolist())
+                    except Exception:
+                        writer.writerow([data])
 
     def _side_bar(self) -> QWidget:
         widget = QWidget()
@@ -70,6 +96,7 @@ class DashboardFrame(QWidget):
 
         self.start_button.clicked.connect(self._start_radar)
         stop_button.clicked.connect(self._stop_radar)
+        save_button.clicked.connect(self._save_data)
 
         widget.setLayout(layout)
         widget.setObjectName("sideBar")
@@ -99,8 +126,8 @@ class DashboardFrame(QWidget):
 
         try:
             self.urad_radar = URadRadar(urad_port, ultrasonic_port, timer_sec)
-        except SerialException:
-            print("Tidak dapat menemukan radar, pastikan port telah benar.")
+        except SerialException as e:
+            print("Tidak dapat menemukan radar, pastikan port telah benar.\n", e)
             return
 
         self.radar_thread = QThread()
@@ -111,9 +138,16 @@ class DashboardFrame(QWidget):
         self.urad_radar.finished.connect(self.urad_radar.deleteLater)
         self.radar_thread.finished.connect(self.radar_thread.deleteLater)
 
-        # connect signal for radar data
+        # connect signal for radar ploting
         self.urad_radar.phase_plot.connect(self._plot_phase)
         self.urad_radar.magnitude_data.connect(self._plot_magnitude)
+
+        # connect signal for radar data
+        self.urad_radar.ultrasonic_data.connect(self.buffer_data["ultrasonik"].append)
+        self.urad_radar.i_data.connect(self.buffer_data["i"].append)
+        self.urad_radar.q_data.connect(self.buffer_data["q"].append)
+        self.urad_radar.peek_phase.connect(self.buffer_data["phase"].append)
+        self.urad_radar.magnitude_data.connect(self.buffer_data["magnitude"].append)
 
         # connect signal for gui
         self.urad_radar.time.connect(self._set_timer_countdown)
@@ -129,9 +163,6 @@ class DashboardFrame(QWidget):
             pass
 
         self.start_button.setEnabled(True)
-
-    def _save_data(self):
-        pass
 
     def _plot_phase_group(self) -> QWidget:
         widget = QGroupBox()
@@ -164,7 +195,7 @@ class DashboardFrame(QWidget):
         _, _, mag_max, mag_min = get_scale_plot()
 
         self.magnitude_plot.axes.plot(magnitude_data)
-        self.magnitude_plot.axes.set_ylim([mag_max, mag_min])
+        self.magnitude_plot.axes.set_ylim([mag_min, mag_max])
 
         # refresh canvas
         self.magnitude_plot.draw_idle()
