@@ -71,6 +71,8 @@ class DashboardFrame(QWidget):
                     except Exception:
                         writer.writerow([data])
 
+        self._set_buffer()
+
     def _side_bar(self) -> QWidget:
         widget = QWidget()
         layout = QVBoxLayout()
