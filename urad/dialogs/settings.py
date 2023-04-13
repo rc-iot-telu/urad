@@ -4,7 +4,7 @@ import typing
 
 from PyQt5.QtCore import pyqtSignal
 from PyQt5.QtWidgets import (
-    QDialog, QFormLayout, QWidget, 
+    QDialog, QFileDialog, QFormLayout, QWidget, 
     QGroupBox, QLineEdit, QPushButton,
     QTextEdit, QVBoxLayout
 )
@@ -54,6 +54,14 @@ class SettingDialog(QDialog):
         save_button = QPushButton("Simpan Pengaturan", group_box)
         refresh_button = QPushButton("Refresh Daftar Port", group_box)
 
+        dir_button = QPushButton("Pilih Folder", group_box)
+        dir_path = QFileDialog(group_box) # Dir where data (Inclinometer and radar) stored
+        dir_path.setDirectory(self.dir_path)
+        dir_path.setFileMode(QFileDialog.Directory) # type: ignore
+        dir_path.fileSelected.connect(self._folder_selected)
+
+        dir_button.clicked.connect(dir_path.exec) # type: ignore
+
         layout.addRow("Port URad", urad_port)
         layout.addRow("Port Ultrasonik", ultrasonik_port)
         layout.addRow(QWidget())
@@ -62,6 +70,8 @@ class SettingDialog(QDialog):
         layout.addRow(QWidget())
         layout.addRow("Max Plot Mag", mag_max)
         layout.addRow("Min Plot Mag", mag_min)
+        layout.addRow(QWidget())
+        layout.addRow("Folder Data", dir_button)
         layout.addRow(QWidget())
         layout.addRow(urad_port_list)
         layout.addRow(save_button)
@@ -123,6 +133,7 @@ class SettingDialog(QDialog):
             "phase_min": self.phase_min,
             "mag_max": self.mag_max,
             "mag_min": self.mag_min,
+            "dir_path": self.dir_path,
         }
 
         file_path = os.path.dirname(os.path.realpath(__file__))

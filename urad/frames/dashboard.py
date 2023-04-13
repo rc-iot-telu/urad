@@ -14,7 +14,7 @@ from PyQt5.QtWidgets import (
     QLabel, QPushButton, QTimeEdit, QVBoxLayout, QWidget
 )
 
-from urad.contrib import PlotCanvas, get_port_setting, get_scale_plot
+from urad.contrib import PlotCanvas, get_path_setting, get_port_setting, get_scale_plot
 from urad.radar import URadRadar
 
 
@@ -62,7 +62,7 @@ class DashboardFrame(QWidget):
         today = str(datetime.datetime.today()).replace(":", ".")
 
         for label, datas in self.buffer_data.items():
-            path = os.path.expanduser(f"~/Documents/DATA_{label.upper()}_{today}.csv")
+            path = f"{get_path_setting()}/DATA_{label.upper()}_{today}.csv"
             with open(path, "w+", newline="") as f:
                 writer = csv.writer(f, dialect="excel")
                 for data in datas:

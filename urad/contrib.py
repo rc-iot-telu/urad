@@ -65,6 +65,22 @@ def get_port_setting():
     except FileNotFoundError:
         return ""
 
+def get_path_setting():
+    """
+    Read data for the default value: application setting
+    """
+    file_path = "./urad/dialogs"
+    try:
+        with open(os.path.join(file_path, "settings.json"), "r") as f:
+            setting_data: dict = json.loads(f.read())
+
+            path_setting = str(setting_data.get("dir_path"))
+
+            return path_setting
+
+    except FileNotFoundError:
+        return ""
+
 class Timer(QThread):
     time_lapsed = pyqtSignal(str)
     time_lapsed_sec = pyqtSignal(int)
