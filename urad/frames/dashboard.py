@@ -7,7 +7,7 @@ import numpy as np
 
 from serial.serialutil import SerialException
 
-from PyQt5.QtCore import QThread, QTime
+from PyQt5.QtCore import QThread, QTime, pyqtSlot
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import (
     QGridLayout, QGroupBox, QHBoxLayout,
@@ -112,6 +112,7 @@ class DashboardFrame(QWidget):
         )
         return widget
 
+    @pyqtSlot(int)
     def _set_timer_countdown(self, sec_raw: int):
         mins = sec_raw // 60
         sec = sec_raw % 60
@@ -137,12 +138,12 @@ class DashboardFrame(QWidget):
         self.urad_radar.moveToThread(self.radar_thread)
         self.radar_thread.started.connect(self.urad_radar.run)
         self.urad_radar.finished.connect(self.radar_thread.quit)
-        self.urad_radar.finished.connect(self.urad_radar.deleteLater)
+        #  self.urad_radar.finished.connect(self.urad_radar.deleteLater)
         self.radar_thread.finished.connect(self.radar_thread.deleteLater)
 
         # connect signal for radar ploting
         self.urad_radar.phase_plot.connect(self._plot_phase)
-        self.urad_radar.magnitude_data.connect(self._plot_magnitude)
+        self.urad_radar.magnitude_plot.connect(self._plot_magnitude)
 
         # connect signal for radar data
         self.urad_radar.ultrasonic_data.connect(self.buffer_data["ultrasonik"].append)
@@ -158,6 +159,7 @@ class DashboardFrame(QWidget):
         self.radar_thread.start()
         self.start_button.setEnabled(False)
 
+    @pyqtSlot()
     def _stop_radar(self):
         try:
             self.urad_radar.is_taking_data = False
@@ -178,6 +180,7 @@ class DashboardFrame(QWidget):
         widget.setLayout(layout)
         return widget
 
+    @pyqtSlot(np.ndarray)
     def _plot_phase(self, phase_data: np.ndarray) -> None:
         #  refresh and plot the data
         self.phase_plot.axes.clear()
@@ -191,6 +194,7 @@ class DashboardFrame(QWidget):
         self.phase_plot.draw_idle()
         self.phase_plot.flush_events()
 
+    @pyqtSlot(np.ndarray)
     def _plot_magnitude(self, magnitude_data: np.ndarray) -> None:
         self.magnitude_plot.axes.clear()
 

@@ -13,6 +13,7 @@ from urad.radar.ultrasonic import UltrasonicSensor
 class URadRadar(QObject):
     # data for ploting
     phase_plot = pyqtSignal(np.ndarray)
+    magnitude_plot = pyqtSignal(np.ndarray)
     time = pyqtSignal(int)
 
     # data that to be save
@@ -121,6 +122,7 @@ class URadRadar(QObject):
 
     def run(self):
         phase_plot_data = np.linspace(0, 0, 100)[:-1]
+        counter = 0
 
         self.timer.start()
         while self.is_taking_data:
@@ -173,7 +175,9 @@ class URadRadar(QObject):
                 self.i_data.emit(data_i)
                 self.q_data.emit(data_q)
 
-                self.phase_plot.emit(phase_plot_data)
+                if counter % 10 == 0:
+                    self.phase_plot.emit(phase_plot_data)
+                    self.magnitude_plot.emit(FrequencyDomainComplex)
 
                 self.magnitude_data.emit(FrequencyDomainComplex)
                 self.peek_phase.emit(float(phase[index_fft]))
@@ -185,7 +189,8 @@ class URadRadar(QObject):
 
                 phase_plot_data = np.append(phase_plot_data[1:], 0.0)
 
-            time.sleep(0.5)
+            #  time.sleep(0.3)
+            counter += 1
 
             #  # If number of detected targets is greater than 0 prints an empty line for a smarter output
             if NtarDetected > 0:
