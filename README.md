@@ -20,5 +20,5 @@ Digunakan untuk keperluan penelitian IS-IoT Telkom University.
      ![gambar setting](https://github.com/rc-iot-telu/urad/blob/master/screenshoot/setting_port.jpg?raw=true)
    - Piilh Juga tempat data di simpan dengan cara meng-click: "Pilih Folder"
      
-2. Setelah selesai mengatur nomor port, aplikasi dapat langsung digunakan
+2. Setelah selesai mengatur **nomor port** dan **folder data**, aplikasi dapat langsung digunakan
 3. Untuk mengatur waktu lamanya penggunaan aplikasi (fitur auto-stop) dapat input waktu lamanya radar akan digunakan di bawah tombol: "Simpan Data"
