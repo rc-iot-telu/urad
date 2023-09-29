@@ -7,7 +7,7 @@ Digunakan untuk keperluan penelitian IS-IoT Telkom University.
 
 - Pastikan Python versi 3.7 keatas telah terinstall.
 - Cek dengan membuka CMD (Command Prompt) dan ketik python, jika muncul tulisan: "Python 3.x.xx ..." (versi python) maka prosess instalasi berhasil.
-- Buka lagi CMD (Command Prompt) di folder ini (URad) dengan cara: ```ctrl + shift + click kanan di dalam``` folder urad lalu pilih Command Prompt atau terminal atau powershell, lalu ketik ```pip install -r requirements.txt```
+- Buka lagi CMD (Command Prompt) di folder ini (URad) dengan cara: ```ctrl + shift + click``` kanan di dalam folder urad lalu pilih **Command Prompt** atau **Powershell** atau **Terminal**, lalu ketik ```pip install -r requirements.txt```
 - Tunggu hingga selesai.
 - Setelah prosess installasi library berhasil, double click file: main.py. Jika muncul UI maka prosess installasi berhasil
 
