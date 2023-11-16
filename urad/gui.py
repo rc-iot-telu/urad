@@ -1,7 +1,7 @@
 import typing
 import sys
-from PyQt5.QtGui import QIcon
 
+from PyQt5.QtGui import QIcon
 from PyQt5.QtWidgets import (
     QDesktopWidget, QMainWindow, QMenuBar, QWidget
 )

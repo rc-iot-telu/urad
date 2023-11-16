@@ -46,8 +46,8 @@ movement_true = False 		# not interested in boolean movement detection
 # Serial Port configuration
 ser = serial.Serial()
 if (usb_communication):
-	ser.port = 'COM10'
-	ser.baudrate = 1e6
+	ser.port = 'COM5'
+	ser.baudrate = int(1e6)
 else:
 	ser.port = '/dev/serial0'
 	ser.baudrate = 115200
@@ -65,6 +65,7 @@ def closeProgram():
 	# switch OFF uRAD
 	return_code = uRAD_USB_SDK11.turnOFF(ser)
 	if (return_code != 0):
+		print("Error?")
 		exit()
 
 # Open serial port
@@ -125,7 +126,7 @@ while True:
 	SNR = results[3]
 	I = raw_results[0]
 	Q = raw_results[1]
-    
+
 	# Iterate through desired targets
 	for i in range(NtarDetected):
 		# If SNR is big enough
@@ -203,7 +204,6 @@ while True:
 	# Sleep during specified time
 	if (not usb_communication):
 		sleep(timeSleep)
-	
 
 plt.show()
 print(hasil_fft)

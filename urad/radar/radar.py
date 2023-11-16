@@ -60,9 +60,9 @@ class URadRadar(QObject):
         self.usb_communication = using_usb
 
         self.ser = serial.Serial()
-        
+
         if self.usb_communication:
-            self.ser.baudrate = 1e6
+            self.ser.baudrate = int(1e6)
         else:
             self.ser.baudrate = 115200
 
